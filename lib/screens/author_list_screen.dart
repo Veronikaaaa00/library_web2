@@ -126,6 +126,10 @@ class _AuthorListScreenState extends State<AuthorListScreen> {
 
     return AppScaffold(
       title: 'Авторы',
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/authors/new'),
+        child: const Icon(Icons.add),
+      ),
       actions: [
         if (notifier.hasSelection)
           Padding(
@@ -352,6 +356,11 @@ class _AuthorListScreenState extends State<AuthorListScreen> {
         tooltip: 'Открыть',
         onPressed: () => context.go('/authors/${author.id}'),
         icon: const Icon(Icons.visibility_outlined),
+      ),
+      IconButton(
+        tooltip: 'Изменить',
+        onPressed: () => context.go('/authors/${author.id}/edit'),
+        icon: const Icon(Icons.edit_outlined),
       ),
       IconButton(
         tooltip: 'Удалить',

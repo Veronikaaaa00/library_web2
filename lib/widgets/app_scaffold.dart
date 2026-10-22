@@ -33,6 +33,12 @@ class AppScaffold extends StatelessWidget {
               context.go('/books');
             case 2:
               context.go('/authors');
+            case 3:
+              context.go('/genres');
+            case 4:
+              context.go('/publishers');
+            case 5:
+              context.go('/readers');
           }
         },
         children: const [
@@ -60,6 +66,21 @@ class AppScaffold extends StatelessWidget {
             selectedIcon: Icon(Icons.person),
             label: Text('Авторы'),
           ),
+          NavigationDrawerDestination(
+            icon: Icon(Icons.category_outlined),
+            selectedIcon: Icon(Icons.category),
+            label: Text('Жанры'),
+          ),
+          NavigationDrawerDestination(
+            icon: Icon(Icons.business_outlined),
+            selectedIcon: Icon(Icons.business),
+            label: Text('Издательства'),
+          ),
+          NavigationDrawerDestination(
+            icon: Icon(Icons.badge_outlined),
+            selectedIcon: Icon(Icons.badge),
+            label: Text('Читатели'),
+          ),
         ],
       ),
       floatingActionButton: floatingActionButton,
@@ -70,6 +91,9 @@ class AppScaffold extends StatelessWidget {
   int _selectedIndex(String location) {
     if (location.startsWith('/books')) return 1;
     if (location.startsWith('/authors')) return 2;
+    if (location.startsWith('/genres')) return 3;
+    if (location.startsWith('/publishers')) return 4;
+    if (location.startsWith('/readers')) return 5;
     return 0;
   }
 }

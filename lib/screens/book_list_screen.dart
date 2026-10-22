@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../data/seed_data.dart';
 import '../models/book.dart';
 import '../models/book_query.dart';
+import '../models/genre.dart';
+import '../models/publisher.dart';
+import '../repositories/genre_repository.dart';
+import '../repositories/publisher_repository.dart';
 import '../state/book_list_notifier.dart';
 import '../widgets/app_scaffold.dart';
 import '../widgets/debounced_search_field.dart';
@@ -23,6 +26,28 @@ class _BookListScreenState extends State<BookListScreen> {
   final _yearFromController = TextEditingController();
   final _yearToController = TextEditingController();
   var _filtersOpen = false;
+  List<Genre> _genres = [];
+  List<Publisher> _publishers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadLookups();
+    });
+  }
+
+  Future<void> _loadLookups() async {
+    final genresRepo = context.read<GenreRepository>();
+    final publishersRepo = context.read<PublisherRepository>();
+    final genres = await genresRepo.findAll();
+    final publishers = await publishersRepo.findAll();
+    if (!mounted) return;
+    setState(() {
+      _genres = genres;
+      _publishers = publishers;
+    });
+  }
 
   @override
   void didChangeDependencies() {
@@ -121,6 +146,10 @@ class _BookListScreenState extends State<BookListScreen> {
 
     return AppScaffold(
       title: 'Книги',
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.go('/books/new'),
+        child: const Icon(Icons.add),
+      ),
       actions: [
         if (notifier.hasSelection)
           Padding(
@@ -223,9 +252,14 @@ class _BookListScreenState extends State<BookListScreen> {
                           ),
                           TableColumnSpec(
                             label: 'Издательство',
-                            build: (b) => Text(
-                              findPublisher(b.publisherId)?.name ?? '—',
-                            ),
+                            build: (b) {
+                              for (final p in _publishers) {
+                                if (p.id == b.publisherId) {
+                                  return Text(p.name);
+                                }
+                              }
+                              return const Text('—');
+                            },
                           ),
                         ],
                         actions: (b) => _actions(b),
@@ -270,7 +304,7 @@ class _BookListScreenState extends State<BookListScreen> {
                 ),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Все')),
-                  for (final genre in seedGenres)
+                  for (final genre in _genres)
                     DropdownMenuItem(value: genre.id, child: Text(genre.name)),
                 ],
                 onChanged: (value) => _go(query.copyWith(genreId: value)),
@@ -289,7 +323,7 @@ class _BookListScreenState extends State<BookListScreen> {
                 ),
                 items: [
                   const DropdownMenuItem(value: null, child: Text('Все')),
-                  for (final publisher in seedPublishers)
+                  for (final publisher in _publishers)
                     DropdownMenuItem(
                       value: publisher.id,
                       child: Text(publisher.name),
@@ -376,6 +410,11 @@ class _BookListScreenState extends State<BookListScreen> {
         icon: const Icon(Icons.visibility_outlined),
       ),
       IconButton(
+        tooltip: 'Изменить',
+        onPressed: () => context.go('/books/${book.id}/edit'),
+        icon: const Icon(Icons.edit_outlined),
+      ),
+      IconButton(
         tooltip: 'Удалить',
         onPressed: () => _confirmSoftDelete(book),
         icon: const Icon(Icons.delete_outline),
@@ -384,7 +423,13 @@ class _BookListScreenState extends State<BookListScreen> {
   }
 
   Widget _bookCard(Book book, BookListNotifier notifier) {
-    final publisher = findPublisher(book.publisherId)?.name ?? '—';
+    String publisher = '—';
+    for (final p in _publishers) {
+      if (p.id == book.publisherId) {
+        publisher = p.name;
+        break;
+      }
+    }
     return Card(
       child: ListTile(
         leading: Checkbox(

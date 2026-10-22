@@ -1,11 +1,22 @@
 import 'package:go_router/go_router.dart';
 
 import 'screens/author_detail_screen.dart';
+import 'screens/author_form_screen.dart';
 import 'screens/author_list_screen.dart';
 import 'screens/book_detail_screen.dart';
+import 'screens/book_form_screen.dart';
 import 'screens/book_list_screen.dart';
+import 'screens/genre_detail_screen.dart';
+import 'screens/genre_form_screen.dart';
+import 'screens/genre_list_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/not_found_screen.dart';
+import 'screens/publisher_detail_screen.dart';
+import 'screens/publisher_form_screen.dart';
+import 'screens/publisher_list_screen.dart';
+import 'screens/reader_detail_screen.dart';
+import 'screens/reader_form_screen.dart';
+import 'screens/reader_list_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/',
@@ -15,6 +26,17 @@ final appRouter = GoRouter(
       path: '/books',
       builder: (context, state) => const BookListScreen(),
       routes: [
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const BookFormScreen(),
+        ),
+        GoRoute(
+          path: ':id/edit',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            return BookFormScreen(id: id);
+          },
+        ),
         GoRoute(
           path: ':id',
           builder: (context, state) {
@@ -29,10 +51,93 @@ final appRouter = GoRouter(
       builder: (context, state) => const AuthorListScreen(),
       routes: [
         GoRoute(
+          path: 'new',
+          builder: (context, state) => const AuthorFormScreen(),
+        ),
+        GoRoute(
+          path: ':id/edit',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            return AuthorFormScreen(id: id);
+          },
+        ),
+        GoRoute(
           path: ':id',
           builder: (context, state) {
             final id = int.tryParse(state.pathParameters['id'] ?? '') ?? -1;
             return AuthorDetailScreen(authorId: id);
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/genres',
+      builder: (context, state) => const GenreListScreen(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const GenreFormScreen(),
+        ),
+        GoRoute(
+          path: ':id/edit',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            return GenreFormScreen(id: id);
+          },
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '') ?? -1;
+            return GenreDetailScreen(genreId: id);
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/publishers',
+      builder: (context, state) => const PublisherListScreen(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const PublisherFormScreen(),
+        ),
+        GoRoute(
+          path: ':id/edit',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            return PublisherFormScreen(id: id);
+          },
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '') ?? -1;
+            return PublisherDetailScreen(publisherId: id);
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/readers',
+      builder: (context, state) => const ReaderListScreen(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const ReaderFormScreen(),
+        ),
+        GoRoute(
+          path: ':id/edit',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '');
+            return ReaderFormScreen(id: id);
+          },
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = int.tryParse(state.pathParameters['id'] ?? '') ?? -1;
+            return ReaderDetailScreen(readerId: id);
           },
         ),
       ],

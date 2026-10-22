@@ -1,7 +1,9 @@
 import '../models/author.dart';
 import '../models/book.dart';
 import '../models/genre.dart';
+import '../models/library_card.dart';
 import '../models/publisher.dart';
+import '../models/reader.dart';
 
 const seedGenres = <Genre>[
   Genre(id: 1, name: 'Роман'),
@@ -358,6 +360,61 @@ const seedBooks = <Book>[
     genreIds: [1, 5],
     copiesTotal: 4,
     copiesAvailable: 4,
+  ),
+];
+
+final seedReaders = <Reader>[
+  Reader(
+    id: 1,
+    firstName: 'Анна',
+    lastName: 'Иванова',
+    email: 'anna.ivanova@mail.ru',
+    phone: '+79001112233',
+    card: LibraryCard(
+      number: 'LC-1001',
+      issuedAt: DateTime(2024, 1, 15),
+      expiresAt: DateTime(2026, 1, 15),
+      isActive: true,
+    ),
+  ),
+  Reader(
+    id: 2,
+    firstName: 'Пётр',
+    lastName: 'Сидоров',
+    email: 'petr.sidorov@gmail.com',
+    phone: '+79005556677',
+    card: LibraryCard(
+      number: 'LC-1002',
+      issuedAt: DateTime(2023, 6, 1),
+      expiresAt: DateTime(2025, 6, 1),
+      isActive: true,
+    ),
+  ),
+  Reader(
+    id: 3,
+    firstName: 'Мария',
+    lastName: 'Козлова',
+    email: 'm.kozlova@yandex.ru',
+    phone: '+79003334455',
+    card: LibraryCard(
+      number: 'LC-1003',
+      issuedAt: DateTime(2022, 3, 10),
+      expiresAt: DateTime(2024, 3, 10),
+      isActive: false,
+    ),
+  ),
+  Reader(
+    id: 4,
+    firstName: 'Игорь',
+    lastName: 'Смирнов',
+    email: 'igor.smirnov@example.com',
+    phone: '+79007778899',
+    card: LibraryCard(
+      number: 'LC-1004',
+      issuedAt: DateTime(2025, 2, 1),
+      expiresAt: DateTime(2027, 2, 1),
+      isActive: true,
+    ),
   ),
 ];
 

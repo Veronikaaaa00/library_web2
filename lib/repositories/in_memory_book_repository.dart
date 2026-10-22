@@ -60,6 +60,11 @@ class InMemoryBookRepository implements BookRepository {
   }
 
   @override
+  Future<List<Book>> findAll({bool includeDeleted = false}) async {
+    return _books.where((b) => includeDeleted || !b.isDeleted).toList();
+  }
+
+  @override
   Future<Book?> findById(int id) async {
     await Future.delayed(const Duration(milliseconds: 100));
     for (final book in _books) {
@@ -121,9 +126,6 @@ class InMemoryBookRepository implements BookRepository {
 
   @override
   Future<int> deleteMany(List<int> ids) async {
-    // Исправлено: было `!b[i].isDeleted` — индекс i ещё не известен
-    // внутри предиката indexWhere, это ошибка компиляции/логики.
-    // Нужно проверять текущий элемент: `!b.isDeleted`.
     var count = 0;
     for (final id in ids) {
       final i = _books.indexWhere((b) => b.id == id && !b.isDeleted);
@@ -133,5 +135,37 @@ class InMemoryBookRepository implements BookRepository {
       }
     }
     return count;
+  }
+
+  @override
+  Future<bool> isIsbnTaken(String isbn, {int? excludeId}) async {
+    final needle = isbn.replaceAll(RegExp(r'[\s-]'), '').toLowerCase();
+    return _books.any(
+      (b) =>
+          !b.isDeleted &&
+          b.id != excludeId &&
+          b.isbn.replaceAll(RegExp(r'[\s-]'), '').toLowerCase() == needle,
+    );
+  }
+
+  @override
+  Future<int> countByPublisher(int publisherId) async {
+    return _books
+        .where((b) => !b.isDeleted && b.publisherId == publisherId)
+        .length;
+  }
+
+  @override
+  Future<int> countByAuthor(int authorId) async {
+    return _books
+        .where((b) => !b.isDeleted && b.authorIds.contains(authorId))
+        .length;
+  }
+
+  @override
+  Future<int> countByGenre(int genreId) async {
+    return _books
+        .where((b) => !b.isDeleted && b.genreIds.contains(genreId))
+        .length;
   }
 }

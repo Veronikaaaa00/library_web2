@@ -60,6 +60,11 @@ class InMemoryAuthorRepository implements AuthorRepository {
   }
 
   @override
+  Future<List<Author>> findAll({bool includeDeleted = false}) async {
+    return _authors.where((a) => includeDeleted || !a.isDeleted).toList();
+  }
+
+  @override
   Future<Author?> findById(int id) async {
     await Future.delayed(const Duration(milliseconds: 100));
     for (final author in _authors) {

@@ -74,9 +74,20 @@ class _AuthorDetailScreenState extends State<AuthorDetailScreen> {
               _row('Год рождения', '${author.birthYear}'),
               _row('О себе', author.bio ?? '—'),
               const SizedBox(height: 24),
-              OutlinedButton(
-                onPressed: () => context.go('/authors'),
-                child: const Text('Назад к списку'),
+              Wrap(
+                spacing: 12,
+                children: [
+                  FilledButton.tonalIcon(
+                    onPressed: () =>
+                        context.go('/authors/${author.id}/edit'),
+                    icon: const Icon(Icons.edit),
+                    label: const Text('Изменить'),
+                  ),
+                  OutlinedButton(
+                    onPressed: () => context.go('/authors'),
+                    child: const Text('К списку'),
+                  ),
+                ],
               ),
             ],
           );
